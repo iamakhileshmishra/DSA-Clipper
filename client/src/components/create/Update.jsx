@@ -4,6 +4,7 @@ import { AddCircle as Add } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { API } from "../../service/api";
 import ReactQuill from "react-quill";
+import MonacoEditor from "react-monaco-editor"; // Import MonacoEditor
 import "react-quill/dist/quill.snow.css";
 
 const Container = styled(Box)(({ theme }) => ({
@@ -47,6 +48,7 @@ const StyledReactQuill = styled(ReactQuill)`
 const initialPost = {
   title: "",
   description: "",
+  code: "",
   picture: "",
   username: "codeforinterview",
   categories: "Tech",
@@ -60,6 +62,9 @@ const Update = () => {
   const [file, setFile] = useState("");
   const [imageURL, setImageURL] = useState("");
   const [description, setDescription] = useState("");
+  const [code, setCode] = useState("");
+
+  const [title, setTitle] = useState("");
 
   const { id } = useParams();
 
@@ -71,7 +76,19 @@ const Update = () => {
       let response = await API.getPostById(id);
       if (response.isSuccess) {
         setPost(response.data);
+        setTitle(response.data.title);
         setDescription(response.data.description);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let response = await API.getPostById(id);
+      if (response.isSuccess) {
+        setPost(response.data);
+        setCode(response.data.code);
       }
     };
     fetchData();
@@ -95,13 +112,26 @@ const Update = () => {
   }, [file]);
 
   const updateBlogPost = async () => {
-    await API.updatePost(post);
+    const updatedPost = {
+      ...post,
+      title: title,
+      description: description,
+      code: code,
+    };
+    await API.updatePost(updatedPost);
     navigate(`/details/${id}`);
+  };
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
   };
 
   const handleChange = (value) => {
     setDescription(value);
-    setPost({ ...post, description: value });
+  };
+
+  const handleChangeCode = (value) => {
+    setCode(value);
   };
 
   return (
@@ -119,25 +149,34 @@ const Update = () => {
           onChange={(e) => setFile(e.target.files[0])}
         />
         <InputTextField
-          onChange={(e) => setPost({ ...post, title: e.target.value })}
-          value={post.title}
+          onChange={handleTitleChange}
+          value={title}
           name="title"
           placeholder="Title"
         />
-        <Button
-          onClick={() => updateBlogPost()}
-          variant="contained"
-          color="primary"
-        >
-          Update
-        </Button>
       </StyledFormControl>
 
       <StyledReactQuill
         value={description}
         onChange={handleChange}
-        placeholder="Tell your story..."
+        placeholder="Express your unique Approach..."
       />
+      <MonacoEditor
+        placeholder="//Write your code here"
+        height="300" // Set the desired height
+        language="cpp" // Set the language (e.g., "javascript", "typescript")
+        theme="vs-dark" // Set the theme ("vs-light" or "vs-dark")
+        value={code} // Set the initial value
+        onChange={handleChangeCode} // Handle value changes
+      />
+      <br />
+      <Button
+        onClick={() => updateBlogPost()}
+        variant="contained"
+        color="primary"
+      >
+        Update
+      </Button>
     </Container>
   );
 };

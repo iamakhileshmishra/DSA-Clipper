@@ -4,6 +4,7 @@ import { Box, Typography, styled } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
+import MonacoEditor from "react-monaco-editor"; // Import MonacoEditor
 import { API } from '../../service/api';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -114,7 +115,19 @@ const DetailView = () => {
           readOnly={true}
           modules={{ toolbar: false }}
         />
-
+        <br />
+        <MonacoEditor
+          placeholder="//Write your code here"
+          height="300" // Set the desired height
+          language="cpp" // Set the language (e.g., "javascript", "typescript")
+          theme="vs-dark" // Set the theme ("vs-light" or "vs-dark")
+          value={post.code} // Set the initial value
+          options={{
+            readOnly: true,
+            scrollBeyondLastLine: false,
+          }}
+          onChange={(value) => setPost({ ...post, code: value })} // Handle value changes
+        />
         <Comments post={post} />
       </Container>
     );
