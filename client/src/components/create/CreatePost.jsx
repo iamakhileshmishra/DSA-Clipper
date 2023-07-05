@@ -3,6 +3,7 @@ import { styled, Box, Button, InputBase, FormControl } from "@mui/material";
 import { AddCircle as Add } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import ReactQuill from "react-quill";
+import MonacoEditor from "react-monaco-editor"; // Import MonacoEditor
 import "react-quill/dist/quill.snow.css";
 
 import { API } from "../../service/api";
@@ -36,6 +37,7 @@ const InputTextField = styled(InputBase)`
 const initialPost = {
   title: "",
   description: "",
+  code:"",
   picture: "",
   username: "",
   categories: "",
@@ -98,16 +100,30 @@ const CreatePost = () => {
           name="title"
           placeholder="Title"
         />
-        <Button onClick={() => savePost()} variant="contained" color="primary">
-          Publish
-        </Button>
       </StyledFormControl>
 
       <ReactQuill
-        placeholder="Tell your story..."
+        placeholder="Express your unique Approach..."
         value={post.description}
+        height="300"
         onChange={(value) => setPost({ ...post, description: value })}
       />
+      <br />
+      <>Write your Code here </>
+      <br />
+      <br />
+      <MonacoEditor
+        placeholder="//Write your code here"
+        height="300" // Set the desired height
+        language="cpp" // Set the language (e.g., "javascript", "typescript")
+        theme="vs-dark" // Set the theme ("vs-light" or "vs-dark")
+        value={post.code} // Set the initial value
+        onChange={(value) => setPost({ ...post, code: value })} // Handle value changes
+      />
+      <br />
+      <Button onClick={() => savePost()} variant="contained" color="primary">
+        Publish
+      </Button>
     </Container>
   );
 };
