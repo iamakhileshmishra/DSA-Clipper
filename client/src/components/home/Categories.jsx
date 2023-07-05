@@ -9,11 +9,11 @@ const StyledTable = styled(Table)`
 `;
     
 const StyledButton = styled(Button)`
-    margin: 20px;
-    width: 85%;
-    background: #6495ED;
-    color: #fff;
-    text-decoration: none;
+  margin: 20px;
+  width: 85%;
+  background: #9681eb;
+  color: #fff;
+  text-decoration: none;
 `;
     
 const StyledLink = styled(Link)`
